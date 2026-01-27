@@ -1,48 +1,74 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function Checkout({ cartItems }) {
-  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+function Checkout({ cartItems, setOrders, setCartItems }) {
+  const navigate = useNavigate();
+
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.qty,
+    0
+  );
+
+  const delivery = subtotal > 1000 ? 0 : 99;
+  const total = subtotal + delivery;
+
+  const placeOrder = () => {
+    setOrders((prev) => [
+      ...prev,
+      {
+        id: "ORD-" + Date.now(),
+        date: new Date().toLocaleDateString(),
+        items: cartItems,
+        total,
+      },
+    ]);
+
+    setCartItems([]);
+    navigate("/order-success");
+  };
 
   return (
-    <div className="container mt-5 mb-5">
-      <h2 className="fw-bold mb-4">Checkout</h2>
+    <div className="container my-5">
+      <h2 className="fw-bold mb-4">🧾 Checkout</h2>
 
       <div className="row">
-        {/* 🔹 BILLING */}
-        <div className="col-md-6">
-          <h5 className="fw-bold mb-3">Billing Details</h5>
-
-          <input className="form-control mb-2" placeholder="Full Name" />
-          <input className="form-control mb-2" placeholder="Email" />
-          <input className="form-control mb-2" placeholder="Phone Number" />
+        <div className="col-md-7">
+          <input className="form-control mb-3" placeholder="Full Name" />
+          <input className="form-control mb-3" placeholder="Email" />
           <textarea
-            className="form-control mb-2"
-            placeholder="Delivery Address"
-            rows="3"
+            className="form-control mb-3"
+            placeholder="Address"
           ></textarea>
 
-          <button className="btn btn-success w-100 mt-2">
+          <button
+            className="btn btn-danger w-100"
+            onClick={placeOrder}
+          >
             Place Order
           </button>
         </div>
 
-        {/* 🔹 ORDER SUMMARY */}
-        <div className="col-md-6">
-          <h5 className="fw-bold mb-3">Order Summary</h5>
+        <div className="col-md-5">
+          <div className="card shadow">
+            <div className="card-body">
+              <h5>Order Summary</h5>
 
-          {cartItems.map((item, index) => (
-            <div
-              key={index}
-              className="d-flex justify-content-between border-bottom py-2"
-            >
-              <span>{item.title}</span>
-              <span>₹{item.price}</span>
+              {cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="d-flex justify-content-between"
+                >
+                  <span>{item.title} × {item.qty}</span>
+                  <span>₹{item.price * item.qty}</span>
+                </div>
+              ))}
+
+              <hr />
+              <p>Subtotal: ₹{subtotal}</p>
+              <p>Delivery: {delivery === 0 ? "Free" : `₹${delivery}`}</p>
+              <h5 className="text-danger">Total: ₹{total}</h5>
             </div>
-          ))}
-
-          <h5 className="text-end mt-3">
-            Total: <span className="text-danger">₹{total}</span>
-          </h5>
+          </div>
         </div>
       </div>
     </div>

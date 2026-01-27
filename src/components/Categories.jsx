@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import products from "../data/products";
 
-function Categories({ addToCart }) {   // ✅ RECEIVE PROP
+function Categories({ addToCart }) {
   const [category, setCategory] = useState("All");
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -23,9 +23,10 @@ function Categories({ addToCart }) {   // ✅ RECEIVE PROP
     <div className="container-fluid mt-4">
       <div className="row">
 
-        {/* SIDEBAR */}
+        {/* ================= SIDEBAR ================= */}
         <div className="col-md-2 bg-light p-4">
-          <h5 className="fw-bold">🎁 Categories</h5>
+          <h5 className="fw-bold mb-3">🎁 Categories</h5>
+
           {categories.map((cat) => (
             <button
               key={cat}
@@ -39,48 +40,68 @@ function Categories({ addToCart }) {   // ✅ RECEIVE PROP
           ))}
         </div>
 
-        {/* PRODUCTS */}
+        {/* ================= PRODUCTS ================= */}
         <div className="col-md-10">
           <div className="row">
+
             {filteredProducts.map((product) => (
               <div className="col-md-3 mb-4" key={product.id}>
-                <div className="card shadow h-100">
+                <div className="card shadow-sm h-100 product-card">
+
+                  {/* IMAGE */}
                   <img
                     src={product.image}
                     alt={product.title}
                     className="card-img-top"
-                    style={{ height: "220px", objectFit: "cover" }}
+                    style={{ height: "200px", objectFit: "cover" }}
                   />
 
-                  <div className="card-body text-center">
-                    <h6>{product.title}</h6>
-                    <p className="fw-bold text-danger">
+                  {/* CARD BODY */}
+                  <div className="card-body">
+                    <h6 className="fw-bold">{product.title}</h6>
+
+                    {/* ⭐ RATING */}
+                    <div className="text-warning mb-1">
+                      ★★★★☆ <small className="text-muted">(4.3)</small>
+                    </div>
+
+                    {/* DESCRIPTION */}
+                    <p className="text-muted small mb-2">
+                      A perfect gift for special moments.
+                    </p>
+
+                    {/* PRICE */}
+                    <p className="fw-bold text-danger mb-3">
                       ₹{product.price}
                     </p>
 
-                    {/* ✅ QUICK VIEW */}
-                    <button
-                      className="btn btn-danger btn-sm me-2"
-                      onClick={() => setSelectedProduct(product)}
-                    >
-                      Quick View
-                    </button>
+                    {/* ACTION BUTTONS */}
+                    <div className="d-flex gap-2">
+                      <button
+                        className="btn btn-danger btn-sm w-50"
+                        onClick={() => setSelectedProduct(product)}
+                      >
+                        Quick View
+                      </button>
 
-                    <Link
-                      to={`/product/${product.id}`}
-                      className="btn btn-outline-danger btn-sm"
-                    >
-                      View Page
-                    </Link>
+                      <Link
+                        to={`/product/${product.id}`}
+                        className="btn btn-outline-danger btn-sm w-50"
+                      >
+                        Details
+                      </Link>
+                    </div>
                   </div>
+
                 </div>
               </div>
             ))}
+
           </div>
         </div>
       </div>
 
-      {/* ✅ QUICK VIEW MODAL */}
+      {/* ================= QUICK VIEW MODAL ================= */}
       {selectedProduct && (
         <div
           className="modal fade show d-block"
@@ -90,7 +111,7 @@ function Categories({ addToCart }) {   // ✅ RECEIVE PROP
             <div className="modal-content">
 
               <div className="modal-header">
-                <h5>{selectedProduct.title}</h5>
+                <h5 className="fw-bold">{selectedProduct.title}</h5>
                 <button
                   className="btn-close"
                   onClick={() => setSelectedProduct(null)}
@@ -107,11 +128,18 @@ function Categories({ addToCart }) {   // ✅ RECEIVE PROP
                 </div>
 
                 <div className="col-md-6">
-                  <h4 className="text-danger">
+                  <div className="text-warning mb-2">
+                    ★★★★☆ <small className="text-muted">(4.3)</small>
+                  </div>
+
+                  <h4 className="text-danger fw-bold">
                     ₹{selectedProduct.price}
                   </h4>
 
-                  {/* ✅ FIXED addToCart */}
+                  <p className="text-muted">
+                    Premium quality gift perfect for celebrations.
+                  </p>
+
                   <button
                     className="btn btn-success me-2"
                     onClick={() => addToCart(selectedProduct)}

@@ -1,81 +1,140 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import SearchModal from "../pages/SearchModal";
 
-function Navbar({ cartCount }) {
+
+function Navbar({ cartCount, user, setUser }) {
+  const [showSearch, setShowSearch] = useState(false);
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-danger sticky-top shadow">
-      <div className="container-fluid">
+    <>
+      {/* 🔹 TOP INFO BAR */}
+      <div className="bg-dark text-white small py-1">
+        <div className="container-fluid d-flex justify-content-between">
+          <div className="d-flex gap-3">
+            <span>About Us</span>
+            <span>Customer Support</span>
+          </div>
+          <div>
+            Shop on the go, download our app.{" "}
+            <span className="fw-bold">Details</span>
+          </div>
+        </div>
+      </div>
 
-        {/* LOGO */}
-        <Link className="navbar-brand fw-bold fs-4" to="/">
-          🎁 GiftShop
-        </Link>
+      {/* 🔹 MAIN NAVBAR */}
+      <nav className="navbar navbar-dark bg-danger py-3">
+        <div className="container-fluid d-flex align-items-center justify-content-between">
 
-        {/* TOGGLER */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+          {/* LOGO */}
+          <Link className="navbar-brand fw-bold fs-3" to="/">
+            Clovers<span className="fw-normal">.</span>
+          </Link>
 
-        <div className="collapse navbar-collapse" id="navbarContent">
+          {/* SEARCH ICON */}
+          <div className="d-none d-lg-block">
+            <i
+              className="bi bi-search fs-4 text-white cursor-pointer"
+              onClick={() => setShowSearch(true)}
+            >Search</i>
+          </div>
 
-          {/* CENTER LINKS */}
-          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-2">
+          {/* RIGHT ICONS */}
+          <div className="d-flex align-items-center gap-4 text-white">
+
+            <i className="bi bi-geo-alt fs-5"></i>
+            <i className="bi bi-heart fs-5"></i>
+
+            {/* CART */}
+            <Link to="/cart" className="position-relative text-white">
+              <i className="bi bi-cart fs-5"></i>
+              {cartCount > 0 && (
+                <span className="cart-badge">{cartCount}</span>
+              )}
+            </Link>
+
+            {/* AUTH */}
+            {!user ? (
+              <Link to="/login" className="btn btn-light btn-sm">
+                Login
+              </Link>
+            ) : (
+              <div className="dropdown">
+                <button
+                  className="btn btn-light btn-sm dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                >
+                  {user.name || "Account"}
+                </button>
+                <ul className="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <Link className="dropdown-item" to="/orders">
+                      My Orders
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => setUser(null)}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {/* 🔹 MENU BAR (PAGES BUTTONS) */}
+      <div className="bg-danger border-top border-light">
+        <div className="container-fluid">
+          <ul className="nav justify-content-center py-2 gap-4">
 
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/">
+              <NavLink className="nav-link text-white fw-semibold" to="/">
                 Home
               </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/categories">
+              <NavLink className="nav-link text-white fw-semibold" to="/categories">
                 Categories
               </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/categories?type=Birthday">
+              <NavLink
+                className="nav-link text-white fw-semibold"
+                to="/categories?type=Birthday"
+              >
                 Birthday Gifts
               </NavLink>
             </li>
 
             <li className="nav-item">
-              <NavLink className="nav-link fw-semibold" to="/categories?type=Anniversary">
+              <NavLink
+                className="nav-link text-white fw-semibold"
+                to="/categories?type=Anniversary"
+              >
                 Anniversary
               </NavLink>
             </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link text-white fw-semibold" to="/orders">
+                My Orders
+              </NavLink>
+            </li>
+
           </ul>
-
-          {/* SEARCH + CART */}
-          <div className="d-flex align-items-center gap-3">
-
-            {/* SEARCH */}
-            <input
-              type="text"
-              className="form-control rounded-pill"
-              placeholder="Search gifts..."
-              style={{ width: "220px" }}
-            />
-
-            {/* CART */}
-            <Link to="/cart" className="btn btn-light position-relative">
-              🛒 Cart
-              {cartCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-          </div>
-
         </div>
       </div>
-    </nav>
+
+      {/* 🔍 SEARCH MODAL */}
+      <SearchModal show={showSearch} onClose={() => setShowSearch(false)} />
+    </>
   );
 }
 
