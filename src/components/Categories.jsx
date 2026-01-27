@@ -4,7 +4,7 @@ import products from "../data/products";
 
 function Categories({ addToCart }) {
   const [category, setCategory] = useState("All");
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [quickView, setQuickView] = useState(null);
 
   const categories = [
     "All",
@@ -24,69 +24,74 @@ function Categories({ addToCart }) {
       <div className="row">
 
         {/* ================= SIDEBAR ================= */}
-        <div className="col-md-2 bg-light p-4">
-          <h5 className="fw-bold mb-3">🎁 Categories</h5>
+        <div className="col-md-2 border-end px-4">
+          <h5 className="fw-bold mb-3">Category</h5>
 
           {categories.map((cat) => (
-            <button
+            <div
               key={cat}
-              className={`btn w-100 mb-2 ${
-                category === cat ? "btn-danger" : "btn-outline-danger"
+              className={`py-2 px-2 mb-2 rounded ${
+                category === cat ? "bg-danger text-white" : "text-dark"
               }`}
+              style={{ cursor: "pointer" }}
               onClick={() => setCategory(cat)}
             >
               {cat}
-            </button>
+            </div>
           ))}
         </div>
 
         {/* ================= PRODUCTS ================= */}
         <div className="col-md-10">
-          <div className="row">
+          <div className="row g-4">
 
             {filteredProducts.map((product) => (
-              <div className="col-md-3 mb-4" key={product.id}>
-                <div className="card shadow-sm h-100 product-card">
+              <div className="col-md-3" key={product.id}>
+                <div className="card h-100 shadow-sm border-0 product-card">
 
                   {/* IMAGE */}
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="card-img-top"
-                    style={{ height: "200px", objectFit: "cover" }}
-                  />
+                  <div className="position-relative">
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="card-img-top p-3"
+                      style={{ height: "200px", objectFit: "contain" }}
+                    />
+
+                    <span className="badge bg-danger position-absolute top-0 start-0 m-2">
+                      -20%
+                    </span>
+                  </div>
 
                   {/* CARD BODY */}
-                  <div className="card-body">
+                  <div className="card-body text-center">
                     <h6 className="fw-bold">{product.title}</h6>
 
-                    {/* ⭐ RATING */}
                     <div className="text-warning mb-1">
-                      ★★★★☆ <small className="text-muted">(4.3)</small>
+                      ★★★★☆ <small className="text-muted">(4.5)</small>
                     </div>
 
-                    {/* DESCRIPTION */}
-                    <p className="text-muted small mb-2">
-                      A perfect gift for special moments.
-                    </p>
-
-                    {/* PRICE */}
-                    <p className="fw-bold text-danger mb-3">
-                      ₹{product.price}
-                    </p>
+                    <div className="mb-2">
+                      <span className="fw-bold text-danger">
+                        ₹{product.price}
+                      </span>
+                      <span className="text-muted text-decoration-line-through ms-2">
+                        ₹{product.price + 300}
+                      </span>
+                    </div>
 
                     {/* ACTION BUTTONS */}
                     <div className="d-flex gap-2">
                       <button
-                        className="btn btn-danger btn-sm w-50"
-                        onClick={() => setSelectedProduct(product)}
+                        className="btn btn-outline-danger btn-sm w-50"
+                        onClick={() => setQuickView(product)}
                       >
                         Quick View
                       </button>
 
                       <Link
                         to={`/product/${product.id}`}
-                        className="btn btn-outline-danger btn-sm w-50"
+                        className="btn btn-danger btn-sm w-50"
                       >
                         Details
                       </Link>
@@ -102,7 +107,7 @@ function Categories({ addToCart }) {
       </div>
 
       {/* ================= QUICK VIEW MODAL ================= */}
-      {selectedProduct && (
+      {quickView && (
         <div
           className="modal fade show d-block"
           style={{ background: "rgba(0,0,0,0.6)" }}
@@ -111,48 +116,44 @@ function Categories({ addToCart }) {
             <div className="modal-content">
 
               <div className="modal-header">
-                <h5 className="fw-bold">{selectedProduct.title}</h5>
+                <h5 className="fw-bold">{quickView.title}</h5>
                 <button
                   className="btn-close"
-                  onClick={() => setSelectedProduct(null)}
+                  onClick={() => setQuickView(null)}
                 ></button>
               </div>
 
               <div className="modal-body row">
                 <div className="col-md-6">
                   <img
-                    src={selectedProduct.image}
-                    className="img-fluid rounded"
-                    alt={selectedProduct.title}
+                    src={quickView.image}
+                    alt={quickView.title}
+                    className="img-fluid"
                   />
                 </div>
 
                 <div className="col-md-6">
-                  <div className="text-warning mb-2">
-                    ★★★★☆ <small className="text-muted">(4.3)</small>
-                  </div>
-
-                  <h4 className="text-danger fw-bold">
-                    ₹{selectedProduct.price}
-                  </h4>
-
+                  <h4 className="text-danger fw-bold">₹{quickView.price}</h4>
                   <p className="text-muted">
-                    Premium quality gift perfect for celebrations.
+                    Premium quality gift perfect for special occasions.
                   </p>
 
                   <button
                     className="btn btn-success me-2"
-                    onClick={() => addToCart(selectedProduct)}
+                    onClick={() => {
+                      addToCart(quickView);
+                      setQuickView(null);
+                    }}
                   >
                     Add to Cart
                   </button>
 
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setSelectedProduct(null)}
+                  <Link
+                    to={`/product/${quickView.id}`}
+                    className="btn btn-outline-danger"
                   >
-                    Close
-                  </button>
+                    View Details
+                  </Link>
                 </div>
               </div>
 

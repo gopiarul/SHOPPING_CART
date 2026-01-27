@@ -31,67 +31,132 @@ function Cart({ cartItems, setCartItems }) {
 
   return (
     <div className="container my-5">
-      <h2 className="fw-bold mb-4">🛒 Shopping Cart</h2>
+      <h3 className="fw-bold mb-4">🛒 Shopping Cart</h3>
 
       {cartItems.length === 0 ? (
-        <div className="text-center">
+        <div className="text-center py-5">
           <h5>Your cart is empty</h5>
           <Link to="/categories" className="btn btn-danger mt-3">
-            Shop Gifts
+            Continue Shopping
           </Link>
         </div>
       ) : (
-        <>
-          {cartItems.map((item) => (
-            <div key={item.id} className="card mb-3 shadow-sm">
-              <div className="card-body d-flex justify-content-between align-items-center">
+        <div className="row">
+          {/* LEFT – CART ITEMS */}
+          <div className="col-md-8">
+            {cartItems.map((item) => (
+              <div
+                key={item.id}
+                className="card mb-3 border-0 shadow-sm"
+              >
+                <div className="card-body">
+                  <div className="row align-items-center">
+                    
+                    {/* IMAGE */}
+                    <div className="col-md-2">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="img-fluid rounded"
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </div>
 
-                <div>
-                  <h6>{item.title}</h6>
-                  <p className="mb-1">₹{item.price}</p>
+                    {/* DETAILS */}
+                    <div className="col-md-4">
+                      <small className="text-muted">Gift Item</small>
+                      <h6 className="fw-semibold mb-1">
+                        {item.title}
+                      </h6>
+                      <small className="text-muted">
+                        ₹{item.price}
+                      </small>
+                    </div>
 
-                  <div className="d-flex align-items-center gap-2">
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={() => updateQty(item.id, "dec")}
-                    >−</button>
+                    {/* QTY */}
+                    <div className="col-md-3">
+                      <div className="d-flex align-items-center gap-2">
+                        <button
+                          className="btn btn-outline-secondary btn-sm"
+                          onClick={() => updateQty(item.id, "dec")}
+                        >
+                          −
+                        </button>
 
-                    <span>{item.qty}</span>
+                        <span className="fw-bold">{item.qty}</span>
 
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={() => updateQty(item.id, "inc")}
-                    >+</button>
+                        <button
+                          className="btn btn-outline-secondary btn-sm"
+                          onClick={() => updateQty(item.id, "inc")}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* PRICE + REMOVE */}
+                    <div className="col-md-3 text-end">
+                      <h6 className="fw-bold mb-2">
+                        ₹{item.price * item.qty}
+                      </h6>
+                      <button
+                        className="btn btn-link text-danger p-0"
+                        onClick={() => removeItem(item.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
 
-                <div className="text-end">
-                  <p className="fw-bold">
-                    ₹{item.price * item.qty}
-                  </p>
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={() => removeItem(item.id)}
-                  >
-                    Remove
-                  </button>
+          {/* RIGHT – SUMMARY */}
+          <div className="col-md-4">
+            <div className="card border-0 shadow-sm sticky-top" style={{ top: "100px" }}>
+              <div className="card-body">
+                <h5 className="fw-bold mb-3">Order Summary</h5>
+
+                <div className="d-flex justify-content-between mb-2">
+                  <span>Items</span>
+                  <span>{cartItems.length}</span>
                 </div>
 
+                <div className="d-flex justify-content-between mb-2">
+                  <span>Delivery</span>
+                  <span className="text-success">Free</span>
+                </div>
+
+                <hr />
+
+                <div className="d-flex justify-content-between fw-bold fs-5">
+                  <span>Total</span>
+                  <span className="text-danger">₹{total}</span>
+                </div>
+
+                <button
+                  className="btn btn-danger w-100 mt-4"
+                  onClick={() => navigate("/checkout")}
+                >
+                  Proceed to Checkout
+                </button>
+
+                <Link
+                  to="/categories"
+                  className="btn btn-outline-secondary w-100 mt-2"
+                >
+                  Continue Shopping
+                </Link>
               </div>
             </div>
-          ))}
-
-          <h4 className="text-end text-danger fw-bold">
-            Total: ₹{total}
-          </h4>
-
-          <button
-            className="btn btn-danger w-100 mt-3"
-            onClick={() => navigate("/checkout")}
-          >
-            Proceed to Checkout
-          </button>
-        </>
+          </div>
+        </div>
       )}
     </div>
   );
