@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -10,22 +10,33 @@ import Cart from "./components/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Orders from "./pages/Orders";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Auth from "./pages/Auth";
+
+import { getCart, saveCart } from "./utils/cartStorage";
 
 function App() {
+  const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [user, setUser] = useState(null); // ✅ AUTH STATE
+
+  // Load user & correct cart on app load
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+    setCartItems(getCart(storedUser));
+  }, []);
+
+  // Save cart whenever it changes
+  useEffect(() => {
+    saveCart(user, cartItems);
+  }, [cartItems, user]);
 
   const addToCart = (product) => {
     setCartItems((prev) => {
-      const exist = prev.find((item) => item.id === product.id);
+      const exist = prev.find((i) => i.id === product.id);
       return exist
-        ? prev.map((item) =>
-            item.id === product.id
-              ? { ...item, qty: item.qty + 1 }
-              : item
+        ? prev.map((i) =>
+            i.id === product.id ? { ...i, qty: i.qty + 1 } : i
           )
         : [...prev, { ...product, qty: 1 }];
     });
@@ -37,57 +48,18 @@ function App() {
         cartCount={cartItems.length}
         user={user}
         setUser={setUser}
+        setCartItems={setCartItems}
       />
 
       <Routes>
         <Route path="/" element={<Home />} />
-
-        <Route
-          path="/categories"
-          element={<Categories addToCart={addToCart} />}
-        />
-
-        <Route
-          path="/product/:id"
-          element={<ProductDetails addToCart={addToCart} />}
-        />
-
-        {/* 🔒 PROTECTED ROUTES */}
-        <Route
-          path="/cart"
-          element={
-            user ? (
-              <Cart cartItems={cartItems} setCartItems={setCartItems} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-
-        <Route
-          path="/checkout"
-          element={
-            user ? (
-              <Checkout
-                cartItems={cartItems}
-                setOrders={setOrders}
-                setCartItems={setCartItems}
-              />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-
-        <Route
-          path="/orders"
-          element={user ? <Orders orders={orders} /> : <Navigate to="/login" />}
-        />
-
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/register" element={<Register />} />
-
+        <Route path="/categories" element={<Categories addToCart={addToCart} />} />
+        <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
+        <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+        <Route path="/checkout" element={<Checkout cartItems={cartItems} setOrders={setOrders} setCartItems={setCartItems} />} />
+        <Route path="/orders" element={<Orders orders={orders} />} />
         <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/login" element={<Auth setUser={setUser} setCartItems={setCartItems} />} />
       </Routes>
 
       <Footer />
