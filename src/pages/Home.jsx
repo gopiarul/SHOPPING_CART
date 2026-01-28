@@ -84,7 +84,7 @@ function Home() {
       </section>
 
       {/* ================= FEATURES ================= */}
-      <section className="py-4 bg-white border-bottom">
+      <section className="py-4 bg-light border-bottom">
         <div className="container">
           <div className="row text-center">
             <div className="col-md-3">

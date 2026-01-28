@@ -18,8 +18,11 @@ function Navbar({ cartCount, user, setUser, setCartItems }) {
       <div className="bg-dark text-white small py-1">
         <div className="container-fluid d-flex justify-content-between">
           <div className="d-flex gap-3">
-            <span>About Us</span>
-            <span>Customer Support</span>
+            <NavLink className="nav-link text-white" to="/about">About</NavLink>
+    <NavLink className="nav-link text-white" to="/support">
+  Customer Support
+</NavLink>
+
           </div>
           <div>
             Shop on the go, download our app. <b>Details</b>
@@ -32,7 +35,7 @@ function Navbar({ cartCount, user, setUser, setCartItems }) {
         <div className="container-fluid d-flex justify-content-between">
 
           <Link className="navbar-brand fw-bold fs-3" to="/">
-            Clovers<span className="fw-normal">.</span>
+            GiftShop<span className="fw-normal">.</span>
           </Link>
 
           <i
@@ -67,7 +70,7 @@ function Navbar({ cartCount, user, setUser, setCartItems }) {
                     </Link>
                   </li>
                   <li>
-                    <button className="dropdown-item" onClick={logout}>
+                    <button className="dropdown-item " onClick={logout}>
                       Logout
                     </button>
                   </li>
@@ -84,6 +87,7 @@ function Navbar({ cartCount, user, setUser, setCartItems }) {
           <NavLink className="nav-link text-white" to="/">Home</NavLink>
           <NavLink className="nav-link text-white" to="/categories">Categories</NavLink>
           <NavLink className="nav-link text-white" to="/orders">My Orders</NavLink>
+          <NavLink className="nav-link text-white" to="/cart">Cart</NavLink>
         </ul>
       </div>
 

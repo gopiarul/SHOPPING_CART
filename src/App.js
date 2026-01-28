@@ -11,8 +11,9 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Orders from "./pages/Orders";
 import Auth from "./pages/Auth";
-
+import About from "./pages/About";
 import { getCart, saveCart } from "./utils/cartStorage";
+import CustomerSupport from "./pages/CustomerSupport";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,6 +61,10 @@ function App() {
         <Route path="/orders" element={<Orders orders={orders} />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/login" element={<Auth setUser={setUser} setCartItems={setCartItems} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/support" element={<CustomerSupport />} />
+        
+
       </Routes>
 
       <Footer />
