@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Categories from "./components/Categories";
 import ProductDetails from "./pages/ProductDetails";
@@ -12,22 +10,31 @@ import OrderSuccess from "./pages/OrderSuccess";
 import Orders from "./pages/Orders";
 import Auth from "./pages/Auth";
 import About from "./pages/About";
-import { getCart, saveCart } from "./utils/cartStorage";
 import CustomerSupport from "./pages/CustomerSupport";
+
+import { getCart, saveCart } from "./utils/cartStorage";
+
+import UserLayout from "./layout/UserLayout";
+
+// ADMIN
+import AdminLogin from "./admin/pages/AdminLogin";
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminProducts from "./admin/pages/AdminProducts";
+import AdminUsers from "./admin/pages/AdminUsers";
+import AdminLayout from "./admin/layout/AdminLayout";
+import AdminRoute from "./admin/components/AdminRoute";
 
 function App() {
   const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  // Load user & correct cart on app load
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
     setCartItems(getCart(storedUser));
   }, []);
 
-  // Save cart whenever it changes
   useEffect(() => {
     saveCart(user, cartItems);
   }, [cartItems, user]);
@@ -45,29 +52,126 @@ function App() {
 
   return (
     <Router>
-      <Navbar
-        cartCount={cartItems.length}
-        user={user}
-        setUser={setUser}
-        setCartItems={setCartItems}
-      />
-
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/categories" element={<Categories addToCart={addToCart} />} />
-        <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
-        <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
-        <Route path="/checkout" element={<Checkout cartItems={cartItems} setOrders={setOrders} setCartItems={setCartItems} />} />
-        <Route path="/orders" element={<Orders orders={orders} />} />
-        <Route path="/order-success" element={<OrderSuccess />} />
+
+        {/* ================= USER ROUTES ================= */}
+        <Route
+          path="/"
+          element={
+            <UserLayout
+              user={user}
+              cartItems={cartItems}
+              setUser={setUser}
+              setCartItems={setCartItems}
+            >
+              <Home />
+            </UserLayout>
+          }
+        />
+
+        <Route
+          path="/categories"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <Categories addToCart={addToCart} />
+            </UserLayout>
+          }
+        />
+
+        <Route
+          path="/product/:id"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <ProductDetails addToCart={addToCart} />
+            </UserLayout>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <Cart cartItems={cartItems} setCartItems={setCartItems} />
+            </UserLayout>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <Checkout cartItems={cartItems} setOrders={setOrders} setCartItems={setCartItems} />
+            </UserLayout>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <Orders orders={orders} />
+            </UserLayout>
+          }
+        />
+        <Route path="/Order-success" element={<OrderSuccess/>}/>  
+
         <Route path="/login" element={<Auth setUser={setUser} setCartItems={setCartItems} />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/support" element={<CustomerSupport />} />
-        
+
+        <Route
+          path="/about"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <About />
+            </UserLayout>
+          }
+        />
+
+        <Route
+          path="/support"
+          element={
+            <UserLayout user={user} cartItems={cartItems} setUser={setUser} setCartItems={setCartItems}>
+              <CustomerSupport />
+            </UserLayout>
+          }
+        />
+
+        {/* ================= ADMIN ROUTES ================= */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminDashboard />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/products"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminProducts />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminUsers />
+              </AdminLayout>
+            </AdminRoute>
+          }
+        />
 
       </Routes>
-
-      <Footer />
     </Router>
   );
 }

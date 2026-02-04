@@ -53,7 +53,7 @@ function Navbar({ cartCount, user, setUser, setCartItems }) {
 
             {!user ? (
               <Link to="/login" className="btn btn-light btn-sm">
-                Login
+                <i class="bi bi-person-square"></i>
               </Link>
             ) : (
               <div className="dropdown">

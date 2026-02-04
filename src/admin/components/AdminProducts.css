@@ -1,0 +1,193 @@
+.admin-products {
+  padding: 20px;
+}
+
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-btn {
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.product-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.product-form input {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+.product-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 12px;
+}
+
+.card-body h6 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.card-body p {
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+.card-body span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.edit-btn {
+  background: #facc15;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.empty-text {
+  text-align: center;
+  color: #94a3b8;
+  grid-column: 1 / -1;
+}
+.admin-users {
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.user-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.user-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.user-header img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+.user-header h5 {
+  margin: 0;
+}
+
+.user-header p {
+  margin: 2px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.role {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 12px;
+}
+
+.user-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.user-info div {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.user-info label {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.user-info span {
+  font-weight: 600;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.active {
+  color: #16a34a;
+}
+
+.user-address h6 {
+  margin-bottom: 6px;
+}
+
+.user-address p {
+  font-size: 14px;
+  color: #475569;
+}
+
+.empty-text {
+  text-align: center;
+  color: #94a3b8;
+}

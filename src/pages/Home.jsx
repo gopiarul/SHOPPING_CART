@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
@@ -29,28 +29,28 @@ function Home() {
 
   const products = [
     {
-      name: "Rose Gift Box",
+      name: "Photo Frame",
       price: 499,
       image:
-        "https://images.unsplash.com/photo-1519681393784-d120267933ba",
+        "https://images.unsplash.com/photo-1670726113933-4bb3940deaf3?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
-      name: "Chocolate Hamper",
-      price: 699,
+      name: "Rolex Watch",
+      price: 3000,
       image:
-        "https://images.unsplash.com/photo-1589571894960-20bbe2828a27",
+        "https://images.unsplash.com/photo-1670404160620-a3a86428560e",
     },
     {
       name: "Teddy Bear",
       price: 399,
       image:
-        "https://images.unsplash.com/photo-1607082349566-187342175e2f",
+        "https://media.istockphoto.com/id/1296983415/photo/brown-teddy-bear-holding-pink-roses-for-valentines-day.jpg?s=2048x2048&w=is&k=20&c=xf2wJ7nVO4n7UZv60ChK_ge5bsVY35vBzUDL2yr7aII=",
     },
     {
-      name: "Couple Frame",
+      name: "Makeup Kit",
       price: 899,
       image:
-        "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+        "https://media.istockphoto.com/id/1416518302/photo/beauty-and-fashion.jpg?s=2048x2048&w=is&k=20&c=4Hk_IdOodJm-MGqRB2H2TrYi4ZeCNnFXCqApuX2YKsw=",
     },
   ];
 
@@ -62,7 +62,7 @@ function Home() {
         style={{
           minHeight: "85vh",
           background:
-            "linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1549465220-1a8b9238cd48')",
+            "linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1544639044-4f142ceb6a2b')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -135,7 +135,7 @@ function Home() {
       </section>
 
       {/* ================= PROMO BANNER ================= */}
-      <section className="bg-light py-5">
+      <section className="bg-secondary py-5">
         <div className="container">
           <div className="row align-items-center">
             <div className="col-md-6">
@@ -146,12 +146,12 @@ function Home() {
                 Hand-picked gifts with special discounts
               </p>
               <button className="btn btn-danger">
-                Explore Deals
+                <Link className="nav-link text-white" to="/categories">Explore deals</Link>
               </button>
             </div>
             <div className="col-md-6">
               <img
-                src="https://images.unsplash.com/photo-1526040652367-ac003a0475fe"
+                src="https://images.unsplash.com/photo-1763358209320-d85bce1b19bc"
                 className="img-fluid rounded shadow"
                 alt="Promo"
               />
@@ -177,9 +177,7 @@ function Home() {
                 <div className="card-body text-center">
                   <h6 className="fw-bold">{p.name}</h6>
                   <p className="text-danger fw-bold">₹{p.price}</p>
-                  <button className="btn btn-dark btn-sm">
-                    Add to Cart
-                  </button>
+                  
                 </div>
               </div>
             </div>
@@ -188,13 +186,13 @@ function Home() {
       </section>
 
       {/* ================= APP DOWNLOAD ================= */}
-      <section className="bg-danger text-white py-5">
+      <section className="bg-dark text-white py-5">
         <div className="container text-center">
-          <h2 className="fw-bold">Shop With Us on the Go 📱</h2>
+          <h2 className="fw-bold text-white">Shop With Us on the Go 📱</h2>
           <p>Download our app for faster checkout</p>
           <div className="d-flex justify-content-center gap-3">
-            <button className="btn btn-light">App Store</button>
-            <button className="btn btn-dark">Google Play</button>
+            <button className="btn btn-light text-dark">App Store</button>
+            <button className="btn btn-light text-dark">Google Play</button>
           </div>
         </div>
       </section>
