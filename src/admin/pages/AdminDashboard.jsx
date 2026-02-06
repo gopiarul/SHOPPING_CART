@@ -22,12 +22,18 @@ ChartJS.register(
 );
 
 function AdminDashboard() {
+  // 🔹 REAL DATA FROM LOCALSTORAGE
+  const products = JSON.parse(localStorage.getItem("products")) || [];
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+  // 🔹 CHART DATA (can be improved later with real monthly logic)
   const barData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         label: "Orders",
-        data: [30, 45, 60, 50, 80, 120],
+        data: [10, 20, 35, 50, orders.length, orders.length + 10],
         backgroundColor: "#0ea5e9",
       },
     ],
@@ -38,7 +44,7 @@ function AdminDashboard() {
     datasets: [
       {
         label: "Users",
-        data: [10, 20, 28, 35, 42, 48],
+        data: [5, 10, 18, 25, 35, users.length],
         borderColor: "#22c55e",
         backgroundColor: "#22c55e",
         tension: 0.4,
@@ -50,23 +56,25 @@ function AdminDashboard() {
     <div className="admin-dashboard">
       <h2 className="dashboard-title">Admin Dashboard</h2>
 
-      {/* STAT CARDS */}
+      {/* 🔹 STAT CARDS */}
       <div className="dashboard-cards">
         <div className="stat-card">
           <p>Total Products</p>
-          <h3>25</h3>
+          <h3>{products.length}</h3>
         </div>
+
         <div className="stat-card">
           <p>Total Orders</p>
-          <h3>120</h3>
+          <h3>{orders.length}</h3>
         </div>
+
         <div className="stat-card">
           <p>Total Users</p>
-          <h3>48</h3>
+          <h3>{users.length}</h3>
         </div>
       </div>
 
-      {/* CHARTS */}
+      {/* 🔹 CHARTS */}
       <div className="dashboard-charts">
         <div className="chart-card">
           <h5>Monthly Orders</h5>

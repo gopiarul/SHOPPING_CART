@@ -23,6 +23,7 @@ import AdminProducts from "./admin/pages/AdminProducts";
 import AdminUsers from "./admin/pages/AdminUsers";
 import AdminLayout from "./admin/layout/AdminLayout";
 import AdminRoute from "./admin/components/AdminRoute";
+ import AdminOrders from "./admin/pages/AdminOrders";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -170,6 +171,19 @@ function App() {
             </AdminRoute>
           }
         />
+       
+
+<Route
+  path="/admin/orders"
+  element={
+    <AdminRoute>
+      <AdminLayout>
+        <AdminOrders />
+      </AdminLayout>
+    </AdminRoute>
+  }
+/>
+
 
       </Routes>
     </Router>

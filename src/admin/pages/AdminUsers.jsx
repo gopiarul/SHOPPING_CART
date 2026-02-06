@@ -1,58 +1,89 @@
-import React from "react";
-
-import "../components/AdminProducts.css";
+import React, { useState } from "react";
 
 function AdminUsers() {
   const users = JSON.parse(localStorage.getItem("users")) || [];
+  const [selectedUser, setSelectedUser] = useState(null);
 
   return (
-    <div className="admin-users">
-      <h3 className="page-title">Users</h3>
+    <div className="container mt-4">
+      <h4>Shopping Cart Users</h4>
 
-      {users.length === 0 && (
-        <p className="empty-text">No users found</p>
-      )}
+      <table className="table table-striped align-middle">
+        <thead className="table-dark">
+          <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Total Items</th>
+            <th>View Cart</th>
+          </tr>
+        </thead>
 
-      {users.map((u, i) => (
-        <div className="user-card" key={i}>
-          {/* Header */}
-          <div className="user-header">
-            <img
-              src={`https://ui-avatars.com/api/?name=${u.username}&background=0D9488&color=fff`}
-              alt="avatar"
-            />
-            <div>
-              <h5>{u.username}</h5>
-              <p>{u.email || "user@email.com"}</p>
-              <span className="role">Customer</span>
+        <tbody>
+          {users.length === 0 && (
+            <tr>
+              <td colSpan="4" className="text-center text-muted">
+                No users found
+              </td>
+            </tr>
+          )}
+
+          {users.map((u, i) => (
+            <tr key={i}>
+              <td className="d-flex align-items-center gap-2">
+                <img
+                  src={
+                    u.avatar ||
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  }
+                  alt="user"
+                  width="40"
+                  height="40"
+                  style={{ borderRadius: "50%" }}
+                />
+                <span>{u.username}</span>
+              </td>
+              <td>{u.email}</td>
+              <td>{u.cart?.length || 0}</td>
+              <td>
+                <button
+                  className="btn btn-info btn-sm"
+                  onClick={() => setSelectedUser(u)}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* CART MODAL */}
+      {selectedUser && (
+        <div className="modal fade show d-block bg-dark bg-opacity-50">
+          <div className="modal-dialog">
+            <div className="modal-content p-3">
+              <h5>{selectedUser.username} Cart</h5>
+
+              {selectedUser.cart?.length ? (
+                selectedUser.cart.map((item, i) => (
+                  <p key={i}>
+                    {item.name} × {item.qty}
+                  </p>
+                ))
+              ) : (
+                <p className="text-muted">No items in cart</p>
+              )}
+
+              <button
+                className="btn btn-secondary mt-2"
+                onClick={() => setSelectedUser(null)}
+              >
+                Close
+              </button>
             </div>
-          </div>
-
-          {/* Info Grid */}
-          <div className="user-info">
-            <div>
-              <label>Total Cart Items</label>
-              <span>{u.cart?.length || 0}</span>
-            </div>
-
-            <div>
-              <label>Last Order</label>
-              <span>{u.lastOrder || "N/A"}</span>
-            </div>
-
-            <div>
-              <label>Account Status</label>
-              <span className="active">Active</span>
-            </div>
-          </div>
-
-          {/* Address */}
-          <div className="user-address">
-            <h6>Address</h6>
-            <p>{u.address || "Not provided"}</p>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 }

@@ -62,6 +62,10 @@ function AdminNavbar() {
         <NavLink to="#" className="menu-item">
           <Shield size={18} /> Security
         </NavLink>
+        <NavLink to="/admin/orders" className="menu-item">
+  <ShoppingBag size={18} /> Orders
+</NavLink>
+
       </nav>
 
       <div className="admin-footer">
