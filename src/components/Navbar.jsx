@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import SearchModal from "../pages/SearchModal";
 import { getCart } from "../utils/cartStorage";
+import AdminLogin from "../admin/pages/AdminLogin";
 
 function Navbar({ cartCount, user, setUser, setCartItems }) {
   const [showSearch, setShowSearch] = useState(false);
@@ -50,6 +51,7 @@ function Navbar({ cartCount, user, setUser, setCartItems }) {
               <i className="bi bi-cart fs-5"></i>
               {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </Link>
+            <Link to="/admin/login/" className="btn btn-light">admin</Link>
 
             {!user ? (
               <Link to="/login" className="btn btn-light btn-sm">
