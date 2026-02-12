@@ -12,6 +12,8 @@ app.use(express.json());
 
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/admin", require("./routes/adminAuthRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
 
 app.get("/", (req, res) => {
   res.send("🚀 API Running");

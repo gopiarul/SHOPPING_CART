@@ -1,107 +1,127 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import products from "../data/products";
+import { getCategories, searchProducts } from "../api/api";
+
 
 function Categories({ addToCart }) {
-  const [category, setCategory] = useState("All");
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(false);
   const [quickView, setQuickView] = useState(null);
 
-  const categories = [
-    "All",
-    "Birthday",
-    "Anniversary",
-    "Valentine",
-    "Christmas",
-  ];
+  // Load Categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getCategories();
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Category error:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-  const filteredProducts =
-    category === "All"
-      ? products
-      : products.filter((p) => p.category === category);
+  // Load Products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await searchProducts(undefined, selectedCategory);
+        setProducts(res.data);
+      } catch (error) {
+        console.error("Product fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [selectedCategory]);
 
   return (
-    <div className="container-fluid mt-4">
+    <div className="container-fluid mt-4 category-page">
       <div className="row">
 
         {/* ================= SIDEBAR ================= */}
-        <div className="col-md-2 border-end px-4">
+        <div className="col-md-2 category-sidebar">
           <h5 className="fw-bold mb-3">Category</h5>
+
+          <div
+            className={`category-item ${selectedCategory === "" ? "active" : ""}`}
+            onClick={() => setSelectedCategory("")}
+          >
+            All
+          </div>
 
           {categories.map((cat) => (
             <div
-              key={cat}
-              className={`py-2 px-2 mb-2 rounded ${
-                category === cat ? "bg-danger text-white" : "text-dark"
+              key={cat._id}
+              className={`category-item ${
+                selectedCategory === cat._id ? "active" : ""
               }`}
-              style={{ cursor: "pointer" }}
-              onClick={() => setCategory(cat)}
+              onClick={() => setSelectedCategory(cat._id)}
             >
-              {cat}
+              {cat.name}
             </div>
           ))}
         </div>
 
         {/* ================= PRODUCTS ================= */}
         <div className="col-md-10">
+          {loading && <p>Loading...</p>}
+          {!loading && products.length === 0 && (
+            <p className="text-muted">No products found</p>
+          )}
+
           <div className="row g-4">
+            {products.map((product) => (
+              <div className="col-md-3" key={product._id}>
+                <div className="product-card">
 
-            {filteredProducts.map((product) => (
-              <div className="col-md-3" key={product.id}>
-                <div className="card h-100 shadow-sm border-0 product-card">
+                  <span className="discount-badge">-20%</span>
 
-                  {/* IMAGE */}
-                  <div className="position-relative">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="card-img-top p-3"
-                      style={{ height: "200px", objectFit: "contain" }}
-                    />
+                  <img
+                    src={product.image || "https://via.placeholder.com/300"}
+                    alt={product.name}
+                    className="product-img"
+                  />
 
-                    <span className="badge bg-danger position-absolute top-0 start-0 m-2">
-                      -20%
-                    </span>
-                  </div>
+                  <div className="p-3 text-center">
 
-                  {/* CARD BODY */}
-                  <div className="card-body text-center">
-                    <h6 className="fw-bold">{product.title}</h6>
+                    <h6 className="fw-bold">{product.name}</h6>
 
-                    <div className="text-warning mb-1">
-                      ★★★★☆ <small className="text-muted">(4.5)</small>
+                    <div className="rating">
+                      ★★★★★ <span>(4.5)</span>
                     </div>
 
-                    <div className="mb-2">
-                      <span className="fw-bold text-danger">
-                        ₹{product.price}
-                      </span>
-                      <span className="text-muted text-decoration-line-through ms-2">
+                    <div className="mt-2">
+                      <span className="price">₹{product.price}</span>
+                      <span className="old-price">
                         ₹{product.price + 300}
                       </span>
                     </div>
 
-                    {/* ACTION BUTTONS */}
-                    <div className="d-flex gap-2">
+                    <div className="mt-3">
                       <button
-                        className="btn btn-outline-danger btn-sm w-50"
+                        className="btn-quick"
                         onClick={() => setQuickView(product)}
                       >
                         Quick View
                       </button>
 
                       <Link
-                        to={`/product/${product.id}`}
-                        className="btn btn-danger btn-sm w-50"
+                        to={`/product/${product._id}`}
+                        className="btn-details"
                       >
                         Details
                       </Link>
                     </div>
-                  </div>
 
+                  </div>
                 </div>
               </div>
             ))}
-
           </div>
         </div>
       </div>
@@ -109,54 +129,51 @@ function Categories({ addToCart }) {
       {/* ================= QUICK VIEW MODAL ================= */}
       {quickView && (
         <div
-          className="modal fade show d-block"
-          style={{ background: "rgba(0,0,0,0.6)" }}
+          className="custom-modal"
+          onClick={() => setQuickView(null)}
         >
-          <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content">
+          <div
+            className="custom-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h5>{quickView.name}</h5>
+              <button
+                className="btn-close"
+                onClick={() => setQuickView(null)}
+              ></button>
+            </div>
 
-              <div className="modal-header">
-                <h5 className="fw-bold">{quickView.title}</h5>
+            <div className="row p-3">
+              <div className="col-md-6">
+                <img
+                  src={quickView.image || "https://via.placeholder.com/400"}
+                  alt={quickView.name}
+                  className="img-fluid"
+                />
+              </div>
+
+              <div className="col-md-6">
+                <h4 className="text-danger">₹{quickView.price}</h4>
+                <p>{quickView.description}</p>
+
                 <button
-                  className="btn-close"
-                  onClick={() => setQuickView(null)}
-                ></button>
+                  className="btn btn-success me-2"
+                  onClick={() => {
+                    addToCart(quickView);
+                    setQuickView(null);
+                  }}
+                >
+                  Add to Cart
+                </button>
+
+                <Link
+                  to={`/product/${quickView._id}`}
+                  className="btn btn-outline-danger"
+                >
+                  View Details
+                </Link>
               </div>
-
-              <div className="modal-body row">
-                <div className="col-md-6">
-                  <img
-                    src={quickView.image}
-                    alt={quickView.title}
-                    className="img-fluid"
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <h4 className="text-danger fw-bold">₹{quickView.price}</h4>
-                  <p className="text-muted">
-                    Premium quality gift perfect for special occasions.
-                  </p>
-
-                  <button
-                    className="btn btn-success me-2"
-                    onClick={() => {
-                      addToCart(quickView);
-                      setQuickView(null);
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-
-                  <Link
-                    to={`/product/${quickView.id}`}
-                    className="btn btn-outline-danger"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>

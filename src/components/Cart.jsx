@@ -1,14 +1,14 @@
-
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 function Cart({ cartItems, setCartItems }) {
   const navigate = useNavigate();
 
-  const updateQty = (id, type) => {
+  // ✅ UPDATE QTY
+  const updateQty = (_id, type) => {
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === id
+        item._id === _id
           ? {
               ...item,
               qty:
@@ -21,10 +21,14 @@ function Cart({ cartItems, setCartItems }) {
     );
   };
 
-  const removeItem = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  // ✅ REMOVE ITEM
+  const removeItem = (_id) => {
+    setCartItems((prev) =>
+      prev.filter((item) => item._id !== _id)
+    );
   };
 
+  // ✅ TOTAL
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
@@ -43,21 +47,21 @@ function Cart({ cartItems, setCartItems }) {
         </div>
       ) : (
         <div className="row">
-          {/* LEFT – CART ITEMS */}
+          {/* LEFT SIDE */}
           <div className="col-md-8">
             {cartItems.map((item) => (
               <div
-                key={item.id}
+                key={item._id}
                 className="card mb-3 border-0 shadow-sm"
               >
                 <div className="card-body">
                   <div className="row align-items-center">
-                    
+
                     {/* IMAGE */}
                     <div className="col-md-2">
                       <img
                         src={item.image}
-                        alt={item.title}
+                        alt={item.name}
                         className="img-fluid rounded"
                         style={{
                           height: "80px",
@@ -71,7 +75,7 @@ function Cart({ cartItems, setCartItems }) {
                     <div className="col-md-4">
                       <small className="text-muted">Gift Item</small>
                       <h6 className="fw-semibold mb-1">
-                        {item.title}
+                        {item.name}
                       </h6>
                       <small className="text-muted">
                         ₹{item.price}
@@ -83,16 +87,22 @@ function Cart({ cartItems, setCartItems }) {
                       <div className="d-flex align-items-center gap-2">
                         <button
                           className="btn btn-outline-secondary btn-sm"
-                          onClick={() => updateQty(item.id, "dec")}
+                          onClick={() =>
+                            updateQty(item._id, "dec")
+                          }
                         >
                           −
                         </button>
 
-                        <span className="fw-bold">{item.qty}</span>
+                        <span className="fw-bold">
+                          {item.qty}
+                        </span>
 
                         <button
                           className="btn btn-outline-secondary btn-sm"
-                          onClick={() => updateQty(item.id, "inc")}
+                          onClick={() =>
+                            updateQty(item._id, "inc")
+                          }
                         >
                           +
                         </button>
@@ -106,7 +116,9 @@ function Cart({ cartItems, setCartItems }) {
                       </h6>
                       <button
                         className="btn btn-link text-danger p-0"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() =>
+                          removeItem(item._id)
+                        }
                       >
                         Remove
                       </button>
@@ -157,6 +169,7 @@ function Cart({ cartItems, setCartItems }) {
               </div>
             </div>
           </div>
+
         </div>
       )}
     </div>

@@ -24,6 +24,7 @@ import AdminUsers from "./admin/pages/AdminUsers";
 import AdminLayout from "./admin/layout/AdminLayout";
 import AdminRoute from "./admin/components/AdminRoute";
  import AdminOrders from "./admin/pages/AdminOrders";
+ import ProductSearch from "./components/ProductSearch";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,16 +41,22 @@ function App() {
     saveCart(user, cartItems);
   }, [cartItems, user]);
 
-  const addToCart = (product) => {
-    setCartItems((prev) => {
-      const exist = prev.find((i) => i.id === product.id);
-      return exist
-        ? prev.map((i) =>
-            i.id === product.id ? { ...i, qty: i.qty + 1 } : i
-          )
-        : [...prev, { ...product, qty: 1 }];
-    });
-  };
+ const addToCart = (product) => {
+  setCartItems((prev) => {
+    const exist = prev.find((i) => i._id === product._id);
+
+    if (exist) {
+      return prev.map((i) =>
+        i._id === product._id
+          ? { ...i, qty: i.qty + 1 }
+          : i
+      );
+    } else {
+      return [...prev, { ...product, qty: 1 }];
+    }
+  });
+};
+
 
   return (
     <Router>
@@ -69,6 +76,20 @@ function App() {
             </UserLayout>
           }
         />
+        <Route
+  path="/search"
+  element={
+    <UserLayout
+      user={user}
+      cartItems={cartItems}
+      setUser={setUser}
+      setCartItems={setCartItems}
+    >
+      <ProductSearch addToCart={addToCart} />
+    </UserLayout>
+  }
+/>
+
 
         <Route
           path="/categories"
