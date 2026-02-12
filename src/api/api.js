@@ -13,5 +13,8 @@ export const searchProducts = (query, category) =>
       category: category || undefined
     }
   });
+ export const getProductById = (id) =>
+    API.get(`/products/${id}`);
+
 
 export default API;
