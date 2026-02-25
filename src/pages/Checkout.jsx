@@ -5,6 +5,7 @@ function Checkout({ cartItems, setOrders, setCartItems }) {
   const navigate = useNavigate();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [agreed, setAgreed] = useState(false);
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.qty,
@@ -17,24 +18,35 @@ function Checkout({ cartItems, setOrders, setCartItems }) {
   const applyCoupon = () => {
     if (coupon === "OFF10") {
       setDiscount(10);
+      alert("Coupon Applied!");
     } else {
       setDiscount(0);
+      alert("Invalid Coupon");
     }
   };
 
   const placeOrder = () => {
-    setOrders((prev) => [
-      ...prev,
-      {
-        id: "ORD-" + Date.now(),
-        date: new Date().toLocaleDateString(),
-        items: cartItems,
-        total,
-      },
-    ]);
+    if (!agreed) {
+      alert("Please accept terms & conditions");
+      return;
+    }
 
+    if (cartItems.length === 0) {
+      alert("Cart is empty");
+      return;
+    }
+
+    const newOrder = {
+      id: "ORD-" + Date.now(),
+      date: new Date().toLocaleDateString(),
+      items: cartItems,
+      total,
+    };
+
+    setOrders((prev) => [...prev, newOrder]);
     setCartItems([]);
-    navigate("/order-success");
+
+    navigate("/order-success", { state: newOrder });
   };
 
   return (
@@ -42,83 +54,23 @@ function Checkout({ cartItems, setOrders, setCartItems }) {
       <h3 className="fw-bold mb-4">🧾 Checkout</h3>
 
       <div className="row g-4">
-        {/* LEFT – SHIPPING + PAYMENT */}
+        {/* LEFT SIDE */}
         <div className="col-md-7">
           <div className="card shadow-sm border-0 p-4 mb-4">
             <h5 className="fw-bold mb-3">Shipping Information</h5>
 
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Full Name</label>
-                <input className="form-control" placeholder="John Doe" />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Phone Number</label>
-                <input className="form-control" placeholder="+91 9876543210" />
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Shipping Address</label>
-              <textarea
-                className="form-control"
-                rows="2"
-                placeholder="Street, City, State, Pincode"
-              ></textarea>
-            </div>
+            <input className="form-control mb-3" placeholder="Full Name" />
+            <input className="form-control mb-3" placeholder="Phone Number" />
+            <textarea
+              className="form-control"
+              rows="2"
+              placeholder="Shipping Address"
+            ></textarea>
           </div>
 
-          {/* PAYMENT */}
           <div className="card shadow-sm border-0 p-4">
-            <h5 className="fw-bold mb-3">Payment Methods</h5>
+            <h5 className="fw-bold mb-3">Promo Coupon</h5>
 
-            <div className="d-flex gap-3 mb-4">
-              <button className="btn btn-outline-secondary btn-sm">
-                Cash on Delivery
-              </button>
-              <button className="btn btn-outline-secondary btn-sm">
-                PayPal
-              </button>
-              <button className="btn btn-outline-secondary btn-sm">
-                GPay
-              </button>
-            </div>
-
-            <h6 className="fw-bold mb-2">Card Information</h6>
-
-            <div className="mb-3">
-              <label className="form-label">Cardholder Name</label>
-              <input className="form-control" placeholder="John Doe" />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Card Number</label>
-              <input
-                className="form-control"
-                placeholder="1234 5678 9012 3456"
-              />
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Expiry Date</label>
-                <input className="form-control" placeholder="MM / YY" />
-              </div>
-              <div className="col-md-6 mb-3">
-                <label className="form-label">CVV</label>
-                <input className="form-control" placeholder="123" />
-              </div>
-            </div>
-
-            <div className="form-check mb-3">
-              <input className="form-check-input" type="checkbox" />
-              <label className="form-check-label">
-                Save card for future purchases
-              </label>
-            </div>
-
-            <h6 className="fw-bold">Promo Coupon</h6>
             <div className="d-flex gap-2">
               <input
                 className="form-control"
@@ -126,32 +78,23 @@ function Checkout({ cartItems, setOrders, setCartItems }) {
                 value={coupon}
                 onChange={(e) => setCoupon(e.target.value)}
               />
-              <button
-                className="btn btn-outline-primary"
-                onClick={applyCoupon}
-              >
+              <button className="btn btn-outline-primary" onClick={applyCoupon}>
                 Apply
               </button>
             </div>
           </div>
         </div>
 
-        {/* RIGHT – ORDER SUMMARY */}
+        {/* RIGHT SIDE */}
         <div className="col-md-5">
-          <div
-            className="card shadow border-0 p-4 sticky-top"
-            style={{ top: "100px" }}
-          >
-            <h5 className="fw-bold mb-3">Order Details</h5>
+          <div className="card shadow border-0 p-4 sticky-top">
+            <h5 className="fw-bold mb-3">Order Summary</h5>
 
             {cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="d-flex align-items-center mb-3"
-              >
+              <div key={item._id} className="d-flex mb-3">
                 <img
                   src={item.image}
-                  alt={item.title}
+                  alt={item.name}
                   style={{
                     width: "60px",
                     height: "60px",
@@ -161,7 +104,7 @@ function Checkout({ cartItems, setOrders, setCartItems }) {
                   }}
                 />
                 <div className="flex-grow-1">
-                  <p className="mb-0 fw-semibold">{item.title}</p>
+                  <p className="mb-0 fw-semibold">{item.name}</p>
                   <small className="text-muted">
                     ₹{item.price} × {item.qty}
                   </small>
@@ -197,9 +140,14 @@ function Checkout({ cartItems, setOrders, setCartItems }) {
             </div>
 
             <div className="form-check mt-3">
-              <input className="form-check-input" type="checkbox" />
+              <input
+                className="form-check-input"
+                type="checkbox"
+                checked={agreed}
+                onChange={() => setAgreed(!agreed)}
+              />
               <label className="form-check-label">
-                I agree to the terms and conditions
+                I agree to the terms & conditions
               </label>
             </div>
 

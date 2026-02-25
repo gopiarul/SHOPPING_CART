@@ -1,61 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { searchProducts } from "../api/api";
 import { Link } from "react-router-dom";
-import products from "../data/products"; // adjust path if needed
 
 function SearchModal({ show, onClose }) {
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setProducts([]);
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const res = await searchProducts(query);
+        setProducts(res.data);
+      } catch (error) {
+        console.error("Search error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 500); // delay for typing
+
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
 
   if (!show) return null;
 
-  const filtered = products.filter((p) =>
-    p.title.toLowerCase().includes(query.toLowerCase())
-  );
-
   return (
-    <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.6)" }}>
-      <div className="modal-dialog modal-lg modal-dialog-centered">
-        <div className="modal-content">
+    <div className="search-overlay" onClick={onClose}>
+      <div className="search-box" onClick={(e) => e.stopPropagation()}>
+        <div className="d-flex justify-content-between mb-3">
+          <h5>Search Products</h5>
+          <button className="btn-close" onClick={onClose}></button>
+        </div>
 
-          <div className="modal-header">
-            <h5 className="fw-bold">Search Gifts</h5>
-            <button className="btn-close" onClick={onClose}></button>
-          </div>
+        <input
+          type="text"
+          placeholder="Type product name..."
+          className="form-control mb-3"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
 
-          <div className="modal-body">
-            <input
-              className="form-control mb-3"
-              placeholder="Search gifts..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              autoFocus
-            />
+        {loading && <p>Searching...</p>}
 
-            {filtered.length === 0 ? (
-              <p className="text-muted">No products found</p>
-            ) : (
-              filtered.map((p) => (
-                <Link
-                  key={p.id}
-                  to={`/product/${p.id}`}
-                  onClick={onClose}
-                  className="d-flex gap-3 mb-2 text-decoration-none text-dark"
-                >
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    width="50"
-                    height="50"
-                    style={{ borderRadius: "6px", objectFit: "cover" }}
-                  />
-                  <div>
-                    <p className="mb-0 fw-semibold">{p.title}</p>
-                    <small className="text-danger">₹{p.price}</small>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
+        <div>
+          {products.map((p) => (
+            <Link
+              key={p._id}
+              to={`/product/${p._id}`}
+              className="search-item"
+              onClick={onClose}
+            >
+              <img
+                src={p.image || "https://via.placeholder.com/60"}
+                alt={p.name}
+                width="50"
+              />
+              <div>
+                <p className="mb-0 fw-bold">{p.name}</p>
+                <small>₹{p.price}</small>
+              </div>
+            </Link>
+          ))}
 
+          {!loading && query && products.length === 0 && (
+            <p>No products found</p>
+          )}
         </div>
       </div>
     </div>

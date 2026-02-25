@@ -1,9 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link ,useLocation} from "react-router-dom";
 import thankyouImg from "../assets/order-success.jpg"; 
 // put your image inside src/assets/
 
 function OrderSuccess() {
+  const location = useLocation();
+  const total = location.state?.total || 0;
+
   const orderId = Math.floor(100000 + Math.random() * 900000);
 
   return (
@@ -47,7 +50,7 @@ function OrderSuccess() {
           <div className="mt-4">
             <div className="d-flex justify-content-between mb-2">
               <span>Gift Items</span>
-              <span>₹499</span>
+              <span>{total}</span>
             </div>
 
             <div className="d-flex justify-content-between mb-2">
@@ -59,7 +62,7 @@ function OrderSuccess() {
 
             <div className="d-flex justify-content-between fw-bold fs-5">
               <span>Total Amount</span>
-              <span className="text-primary">₹499</span>
+              <span className="text-primary">{total}</span>
             </div>
           </div>
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import SearchModal from "../pages/SearchModal";
 import { getCart } from "../utils/cartStorage";
-import AdminLogin from "../admin/pages/AdminLogin";
+
 
 function Navbar({ cartCount, user, setUser, setCartItems }) {
   const [showSearch, setShowSearch] = useState(false);
